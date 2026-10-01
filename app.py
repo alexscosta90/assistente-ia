@@ -31,11 +31,8 @@ def responder(mensagem, historico):
     )
     return resposta.choices[0].message["content"]
 
-chat = gr.ChatInterface(
-    fn=responder,
-    title=str(CONFIG.get("nome", "Assistente IA")),
-    description=str(CONFIG.get("descricao", "Chat com IA"))
-)
+# Interface sem title/description para evitar erro de template
+chat = gr.ChatInterface(fn=responder)
 
 if __name__ == "__main__":
     chat.launch(
