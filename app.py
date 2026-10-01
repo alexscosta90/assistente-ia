@@ -11,7 +11,7 @@ with open("config.yml", "r", encoding="utf-8") as f:
 CHAVE = os.environ.get("OPENROUTER_API_KEY")
 
 if not CHAVE:
-    raise ValueError("Cadastre a chave OPENROUTER_API_KEY no Hugging Face Space.")
+    raise ValueError("Cadastre a chave OPENROUTER_API_KEY no Render.")
 
 # Configura cliente OpenAI para usar OpenRouter
 openai.api_key = CHAVE
