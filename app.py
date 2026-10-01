@@ -17,11 +17,8 @@ if not CHAVE:
 openai.api_key = CHAVE
 openai.base_url = "https://openrouter.ai/api/v1"
 
-def responder(mensagem, historico):
+def responder(mensagem):
     mensagens = [{"role": "system", "content": CONFIG["prompt_sistema"]}]
-    for h in historico:
-        mensagens.append({"role": "user", "content": h[0]})
-        mensagens.append({"role": "assistant", "content": h[1]})
     mensagens.append({"role": "user", "content": mensagem})
 
     resposta = openai.ChatCompletion.create(
@@ -31,11 +28,17 @@ def responder(mensagem, historico):
     )
     return resposta.choices[0].message["content"]
 
-# Interface sem title/description para evitar erro de template
-chat = gr.ChatInterface(fn=responder)
+# Interface simples com input/output de texto
+iface = gr.Interface(
+    fn=responder,
+    inputs="text",
+    outputs="text",
+    title="Assistente IA",
+    description="Digite sua mensagem e receba uma resposta."
+)
 
 if __name__ == "__main__":
-    chat.launch(
+    iface.launch(
         server_name="0.0.0.0",
         server_port=int(os.environ.get("PORT", 10000)),
         share=True
