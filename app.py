@@ -1,7 +1,7 @@
 import gradio as gr
 import os
 import yaml
-import OpenAI
+import openai
 
 # Lê config.yml
 with open("config.yml", "r", encoding="utf-8") as f:
@@ -13,6 +13,7 @@ CHAVE = os.environ.get("OPENROUTER_API_KEY")
 if not CHAVE:
     raise ValueError("Cadastre a chave OPENROUTER_API_KEY no Hugging Face Space.")
 
+# Configura cliente OpenAI para usar OpenRouter
 openai.api_key = CHAVE
 openai.base_url = "https://openrouter.ai/api/v1"
 
@@ -23,18 +24,21 @@ def responder(mensagem, historico):
         mensagens.append({"role": "assistant", "content": h[1]})
     mensagens.append({"role": "user", "content": mensagem})
 
-resposta = openai.ChatCompletion.create(
-    model=CONFIG["modelo"],
-    messages=mensagens,
-    max_tokens=CONFIG.get("max_tokens", 800)
-)
-return resposta.choices[0].message["content"]
+    resposta = openai.ChatCompletion.create(
+        model=CONFIG["modelo"],
+        messages=mensagens,
+        max_tokens=CONFIG.get("max_tokens", 800)
+    )
+    return resposta.choices[0].message["content"]
 
-chat = gr.ChatInterface(fn=responder, title=CONFIG["nome"], description=CONFIG["descricao"])
+chat = gr.ChatInterface(
+    fn=responder,
+    title=CONFIG["nome"],
+    description=CONFIG["descricao"]
+)
+
 if __name__ == "__main__":
     chat.launch(
         server_name="0.0.0.0",
         server_port=int(os.environ.get("PORT", 10000))
     )
-
-
