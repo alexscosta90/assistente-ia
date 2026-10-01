@@ -17,8 +17,17 @@ if not CHAVE:
 openai.api_key = CHAVE
 openai.base_url = "https://openrouter.ai/api/v1"
 
+# Histórico global
+historico = []
+
 def responder(mensagem):
+    global historico
     mensagens = [{"role": "system", "content": CONFIG["prompt_sistema"]}]
+    # adiciona histórico anterior
+    for h in historico:
+        mensagens.append({"role": "user", "content": h[0]})
+        mensagens.append({"role": "assistant", "content": h[1]})
+    # adiciona nova mensagem
     mensagens.append({"role": "user", "content": mensagem})
 
     resposta = openai.ChatCompletion.create(
@@ -26,7 +35,11 @@ def responder(mensagem):
         messages=mensagens,
         max_tokens=CONFIG.get("max_tokens", 800)
     )
-    return resposta.choices[0].message["content"]
+    conteudo = resposta.choices[0].message["content"]
+
+    # salva no histórico
+    historico.append((mensagem, conteudo))
+    return conteudo
 
 # Interface simples com input/output de texto
 iface = gr.Interface(
@@ -34,7 +47,7 @@ iface = gr.Interface(
     inputs="text",
     outputs="text",
     title="Assistente IA",
-    description="Digite sua mensagem e receba uma resposta."
+    description="Digite sua mensagem e receba uma resposta com histórico."
 )
 
 if __name__ == "__main__":
