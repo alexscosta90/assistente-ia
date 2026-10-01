@@ -31,4 +31,5 @@ def responder(mensagem, historico):
     return resposta.choices[0].message.content
 
 chat = gr.ChatInterface(fn=responder, title=CONFIG["nome"], description=CONFIG["descricao"])
-chat.launch()
+if __name__ == "__main__":
+    chat.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 5000)))
