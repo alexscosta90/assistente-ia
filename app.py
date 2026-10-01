@@ -32,4 +32,4 @@ def responder(mensagem, historico):
 
 chat = gr.ChatInterface(fn=responder, title=CONFIG["nome"], description=CONFIG["descricao"])
 if __name__ == "__main__":
-    chat.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 5000)))
+    chat.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 10000)))
