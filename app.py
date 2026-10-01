@@ -33,12 +33,13 @@ def responder(mensagem, historico):
 
 chat = gr.ChatInterface(
     fn=responder,
-    title=CONFIG["nome"],
-    description=CONFIG["descricao"]
+    title=str(CONFIG.get("nome", "Assistente IA")),
+    description=str(CONFIG.get("descricao", "Chat com IA"))
 )
 
 if __name__ == "__main__":
     chat.launch(
         server_name="0.0.0.0",
-        server_port=int(os.environ.get("PORT", 10000))
+        server_port=int(os.environ.get("PORT", 10000)),
+        share=True
     )
